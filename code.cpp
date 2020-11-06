@@ -41,7 +41,7 @@ int left_binary(int* arr, int number)
     int left = 0;
     int right = 99;
     int mid = (left + right) / 2;
-    while ((right - left) > 1)
+    while (left != mid)
     {
         if (number <= arr[mid])
         {
@@ -54,9 +54,13 @@ int left_binary(int* arr, int number)
             mid = (left + right) / 2;
         }
     }
-    if (number == arr[0])
+    if (number <= arr[0])
     {
         left--;
+    }
+    if (number > arr[99])
+    {
+        left++;
     }
     return left + 1;
 }
@@ -66,7 +70,7 @@ int right_binary(int* arr, int number)
     int left = 0;
     int right = 99;
     int mid = (left + right) / 2;
-    while ((right - left) > 1)
+    while (left != mid)
     {
         if (number < arr[mid])
         {
@@ -79,7 +83,11 @@ int right_binary(int* arr, int number)
             mid = (left + right) / 2;
         }
     }
-    if (number == arr[99])
+    if (number < arr[0])
+    {
+        right--;
+    }
+    if (number >= arr[99])
     {
         right++;
     }
@@ -101,19 +109,32 @@ int brute_force(int* arr, int check, int number)
     }
     if (check == 2)
     {
+        std::cout << "Индексы:";
         for (int i = 0; i < 100; i++)
         {
             if (arr[i] == number)
             {
                 cnt += 1;
+                std::cout << ' ' << i;
             }
         }
+        std::cout << '\n';
     }
     if (check == 3)
     {
         for (int i = 0; i < 100; i++)
         {
             if (arr[i] > number)
+            {
+                cnt += 1;
+            }
+        }
+    }
+    if (check == 4)
+    {
+        for (int i = 0; i < 100; i++)
+        {
+            if (arr[i] == number)
             {
                 cnt += 1;
             }
@@ -140,11 +161,10 @@ void fill_array(int* first_arr, int* second_arr)
     }
 }
 
-void max_min(int* arr)
+int max_min(int* arr, bool check = 0)
 {
     int min = arr[0];
     int max = arr[0];
-    std::cout << "\n" << min << "\n";
     for (int i = 1; i < 100; i++)
     {
         if (arr[i] > max)
@@ -156,7 +176,11 @@ void max_min(int* arr)
             min = arr[i];
         }
     }
-    std::cout << "min: " << min << ", max: " << max;
+    if (!check)
+    {
+        std::cout << "min: " << min << ", max: " << max;
+    }
+    return (min + max) / 2;
 }
 
 void show_array(int* arr)
@@ -182,19 +206,17 @@ int main()
     std::cout << "\n1) Создать целочисленный массив размерности N = 100. Элементы массивы должны принимать случайное значение в диапазоне от -99 до 99.\n";
     std::cout << "2) Отсортировать заданные в пункте 1 элементы массива quick sort сортировкой (от меньшего к большему). Определить время, затраченное на сортировку, используя библиотеку chrono.\n";
     std::cout << "3) Найти максимальный и минимальный элемент массива. Подсчитайте время поиска этих элементов в отсортированном массиве и неотсортированном, используя библиотеку chrono.\n";
-    std::cout << "4) Выводит среднее значение (если необходимо, число нужно округлить) максимального и минимального значения. Выводит индексы всех элементов, которые равны этому значению, и их количество.\n";
-    std::cout << "5) Выводит количество элементов в отсортированном массиве, которые меньше числа a, которое инициализируется пользователем.\n";
-    std::cout << "6) Выводит количество элементов в отсортированном массиве, которые больше числа b, которое инициализируется пользователем.\n";
-    std::cout << "7) Выводит информацию о том, есть ли введенное пользователем число в отсортированном массиве. Реализуйте алгоритм бинарного поиска. Сравните скорость его работы с обычным перебором. (*)\n";
-    std::cout << "8) Меняет местами элементы массива, индексы которых вводит пользователь. Выведите скорость обмена, используя библиотеку chrono.\n";
+    std::cout << "4) Вывести среднее значение (если необходимо, число нужно округлить) максимального и минимального значения. Вывести индексы всех элементов, которые равны этому значению, и их количество.\n";
+    std::cout << "5) Вывести количество элементов в отсортированном массиве, которые меньше числа a, которое инициализируется пользователем.\n";
+    std::cout << "6) Вывести количество элементов в отсортированном массиве, которые больше числа b, которое инициализируется пользователем.\n";
+    std::cout << "7) Вывести информацию о том, есть ли введенное пользователем число в отсортированном массиве. Реализуйте алгоритм бинарного поиска. Сравнить скорость его работы с обычным перебором. (*)\n";
+    std::cout << "8) Поменять местами элементы массива, индексы которых вводит пользователь. Вывести скорость обмена, используя библиотеку chrono.\n";
     std::cout << "0) Закончить программу.\n";
     bool if_arr = 0;
-    bool if_min_max = 0;
-    bool if_sort = 0;
+    short int if_sort = 0;
     int arr[100];
     int mid, a, b, cnt, temp;
     int s_arr[100];
-    time_t now_t;
     try {
         while (number != 0)
         {
@@ -211,7 +233,7 @@ int main()
                 fill_array(arr, s_arr);
                 show_array(arr);
                 if_arr = 1;
-                if_min_max = 0;
+                if_sort = 0;
                 break;
             case 2:
             {
@@ -223,6 +245,7 @@ int main()
                     show_array(arr);
                     if_arr = 1;
                 }
+                if_sort = 1;
                 auto t_start = std::chrono::high_resolution_clock::now();
                 quick_sort(arr, 0, 99);
                 auto t_end = std::chrono::high_resolution_clock::now();
@@ -252,10 +275,11 @@ int main()
                 std::chrono::duration< double > t_cnt = t_end - t_start;
                 std::cout << "\nНа нахождение минимума и максимума в неотстортированном массиве ушло " << std::fixed << t_cnt.count() << " секунд\n";
                 t_start = std::chrono::high_resolution_clock::now();
-                std::cout << "min: " << arr[0] << ", max: " << arr[99];
+                int min = arr[0];
+                int max = arr[99];
                 t_end = std::chrono::high_resolution_clock::now();
                 t_cnt = t_end - t_start;
-                std::cout << "\nНа нахождение минимума и максимума в отстортированном массиве ушло " << std::fixed << t_cnt.count() << " секунд\n";
+                std::cout << "На нахождение минимума и максимума в отстортированном массиве ушло " << std::fixed << t_cnt.count() << " секунд\n";
                 break;
             }
             case 4:
@@ -267,12 +291,7 @@ int main()
                     show_array(arr);
                     if_arr = 1;
                 }
-                if (!if_sort)
-                {
-                    quick_sort(arr, 0, 99);
-                    if_sort = 1;
-                }
-                mid = (arr[0] + arr[99]) / 2;
+                mid = max_min(arr, 1);
                 std::cout << "Среднее минимального и максимального элементов равно " << mid << ". Чисел, равных ему, " << brute_force(arr, 2, mid) << ".\n";
                 break;
             case 5:
@@ -350,7 +369,7 @@ int main()
                 std::cout << "Количество элементов равных " << a << " равно " << cnt << ".\n";
                 std::cout << "В отсортированном массиве на бинарный поиск уходит " << std::fixed << t_cnt.count() << " секунд\n";
                 t_start = std::chrono::high_resolution_clock::now();
-                brute_force(s_arr, 2, a);
+                brute_force(s_arr, 4, a);
                 t_end = std::chrono::high_resolution_clock::now();
                 t_cnt = t_end - t_start;
                 std::cout << "В неотсортированном массиве на перебор уходит " << std::fixed << t_cnt.count() << " секунд\n";
@@ -368,17 +387,24 @@ int main()
                 }
                 std::cout << "Введите два числа - индексы массива: ";
                 std::cin >> a >> b;
-                auto t_start = std::chrono::high_resolution_clock::now();
-                temp = arr[a];
-                arr[a] = arr[b];
-                arr[b] = temp;
-                auto t_end = std::chrono::high_resolution_clock::now();
-                std::chrono::duration< double > t_cnt = t_end - t_start;
-                show_array(arr);
-                temp = s_arr[a];
-                s_arr[a] = s_arr[b];
-                s_arr[b] = temp;
-                std::cout << "На замену переменных уходит " << std::fixed << t_cnt.count() << " секунд\n";
+                if ((a < 0) or (a > 99) or (b < 0) or (b > 99))
+                {
+                    std::cout << "Индексы введены некорректно. Это должны быть целые числа в диапазоне от 0 до 99";
+                }
+                else
+                {
+                    auto t_start = std::chrono::high_resolution_clock::now();
+                    temp = arr[a];
+                    arr[a] = arr[b];
+                    arr[b] = temp;
+                    auto t_end = std::chrono::high_resolution_clock::now();
+                    std::chrono::duration< double > t_cnt = t_end - t_start;
+                    show_array(arr);
+                    temp = s_arr[a];
+                    s_arr[a] = s_arr[b];
+                    s_arr[b] = temp;
+                    std::cout << "На замену переменных уходит " << std::fixed << t_cnt.count() << " секунд\n";
+                }
                 break;
             }
             }
